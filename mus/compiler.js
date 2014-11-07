@@ -3,10 +3,13 @@
 // Supports 'seq', 'par', and 'note' objects in MUS.
 
 var endTime = function (startTime, musExpr) {
-    // If the expression is a note, return start time + note's duration:
-    if (musExpr.tag === 'note') {
+    // If the expression is a note or rest, return start time + expression's duration:
+    if (musExpr.tag === 'rest') {
+        return startTime + musExpr.duration;
+
+    } else if (musExpr.tag === 'note') {
         return startTime + musExpr.dur;
-    
+
     // If it's a sequence, return start time + first note's duration + second note's duration:
     } else if (musExpr.tag === 'seq') {
         return endTime(endTime(startTime, musExpr.left),
@@ -26,7 +29,16 @@ var max = function (a, b) {
 
 // Recursive compile from time
 var compileT = function (startTime, musExpr) {
-    
+    // If expression is a rest, do simple translation to NOTE format:
+    if (musExpr.tag === 'rest') {
+        var restRetVal = [{
+            tag: 'rest',
+            start: startTime,
+            duration: musExpr.duration
+        }];
+
+        return restRetVal;
+    }
     // If expression is a note, do simple translation to NOTE format:
     if (musExpr.tag === 'note') {
         var noteRetVal = [{
