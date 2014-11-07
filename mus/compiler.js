@@ -63,3 +63,19 @@ var compileT = function (startTime, musExpr) {
 var compile = function (musExpr) {
     return compileT(0, musExpr);
 };
+
+
+// This code taken directly from Nathan's University PL101 - 12.
+var melody_mus = 
+    { tag: 'seq',
+      left: 
+       { tag: 'seq',
+         left: { tag: 'note', pitch: 'a4', dur: 250 },
+         right: { tag: 'note', pitch: 'b4', dur: 250 } },
+      right:
+       { tag: 'seq',
+         left: { tag: 'note', pitch: 'c4', dur: 500 },
+         right: { tag: 'note', pitch: 'd4', dur: 500 } } };
+
+console.log(melody_mus);
+console.log(compile(melody_mus));
