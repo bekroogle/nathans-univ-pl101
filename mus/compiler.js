@@ -39,11 +39,12 @@ var compileT = function (startTime, musExpr) {
 
         return restRetVal;
     }
-    // If expression is a note, do simple translation to NOTE format:
+    // If expression is a note, do simple translation to NOTE format
+    // (Converting pitch-octave notation into midi pitch codes):
     if (musExpr.tag === 'note') {
         var noteRetVal = [{
             tag: 'note',
-            pitch: musExpr.pitch,
+            pitch: getMidi(musExpr.pitch),
             start: startTime,
             dur: musExpr.dur
         }];
@@ -76,7 +77,25 @@ var compile = function (musExpr) {
     return compileT(0, musExpr);
 };
 
+// Given a string in form <Pitch><Oct> (e.g. 'c4'), returns the MIDI pitch code.
+var getMidi = function(pitchOct) {
+    var octave = parseInt(pitchOct.charAt(1), 10);
+    var pitch = pitchOct.charAt(0);
+    return 20 + (octave * 12) + PitchEnum[pitch];
+};
 
+// Enumerates the number of half steps each pitch adds to the current octave.
+var PitchEnum = {
+    A: 1, a: 1,
+    B: 3, b: 3,
+    C: 4, c: 4,
+    D: 6, d: 6,
+    E: 8, e: 8,
+    F: 9, f: 9,
+    G: 11, g: 11
+};
+
+// Testing
 // This code taken directly from Nathan's University PL101 - 12.
 var melody_mus = 
     { tag: 'seq',
